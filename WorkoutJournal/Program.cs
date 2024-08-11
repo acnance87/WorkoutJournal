@@ -1,10 +1,21 @@
+using Microsoft.EntityFrameworkCore;
 using WorkoutJournal.Components;
+using WorkoutJournal.Data.Models;
+using WorkoutJournal.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddDbContext<WorkoutJournalContext>(
+    opts => opts.UseSqlServer("name=ConntectionStrings:WorkoutJournalText"), 
+    contextLifetime: ServiceLifetime.Transient,
+    optionsLifetime: ServiceLifetime.Transient
+    );
+
+builder.Services.AddTransient<IWorkoutJournalRepository, WorkoutJournalRepository>();
 
 var app = builder.Build();
 
