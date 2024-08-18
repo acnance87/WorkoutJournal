@@ -10,29 +10,39 @@
 </p>
 
 <ul id="workoutTypes">
-    <li>Add new...</li>
+    <li id="0">Add new...</li>
 </ul>
 
 <button class="btn-primary">Click to add a workout</button>
 
 @section Scripts {
     <script>
+        let isDefaultState = true;
+
         $(document).ready(function () {
             $('.btn-primary').on('click', function () {
                 $.ajax({
                   url: '/home/addworkout',
                   type: 'get',
                     success: function (data) {
-                        let workouts = $('#workoutTypes');
-                        if (workouts.children()[0].innerHTML === "Add new...") {
-                            workouts.children().remove();
-                        }
-                        let addWorkout = document.createElement('li');
-                        addWorkout.innerHTML = data.exerciseName;
-                        workouts.append(addWorkout);
+                        addWorkout(data);
                     }
                 })
             });
         });
+
+        function addWorkout(data) {
+            let workouts = $('#workoutTypes');
+
+            if (isDefaultState && workouts.children()[0].id === "0") {
+                workouts.children()[0].remove();
+                isDefaultState = false;
+            }
+
+            let workout = document.createElement('li');
+            workout.innerHTML = data.exerciseName;
+            workout.id = data.id;
+            workouts.append(workout);
+        }
     </script>
 }
