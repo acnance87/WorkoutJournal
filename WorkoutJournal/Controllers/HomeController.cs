@@ -31,13 +31,34 @@ namespace WorkoutJournal.Controllers {
             return View(vm);
         }
 
-        public ActionResult AddWorkout() {
-            var toReturn = new WorkoutTypes() {
-                ExerciseName = "Bicep curl",
-                WorkoutTypeID = 1,
+        public ActionResult AddWorkout(int exerciseId) {
+            var toReturn = new Workouts() {
+                Weight = 0,
+                PerceivedExertion = 0,
+                Repetitions = 0,
+                WorkoutType = new WorkoutTypes() {
+                    WorkoutTypeID = exerciseId,
+                }
             };
+
 
             return Json(toReturn);
         }
-    }
+
+        public ActionResult GetWorkouts() {
+            var newWorkouts = new List<AddWorkoutViewModel>() {
+                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Abdominal crunch", WorkoutTypeID = 1 }, IsChecked = false },
+                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Bicep curl", WorkoutTypeID = 2 }, IsChecked = false },
+                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Chest press", WorkoutTypeID = 3 }, IsChecked = false },
+                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Seated squat", WorkoutTypeID = 4 }, IsChecked = false },
+            }; 
+            return PartialView("_AddWorkout", newWorkouts);
+            //return PartialView("_AddWorkout", _contract.GetWorkoutsTypes());
+        }
+
+        [HttpPost]
+        public ActionResult CreateWorkout([FromBody] IEnumerable<AddWorkoutViewModel> workoutsSelected) {
+            return Ok();
+        }
+    }   
 }

@@ -1,0 +1,12 @@
+﻿@using WorkoutJournal.Data.Models
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model IEnumerable<WorkoutTypes>
+
+@foreach (var exercise in Model) {
+    <input type="checkbox" name="workoutsSelected" class="workoutSelect form-control checkbox-inline" id="@($"exercise{exercise.WorkoutTypeID}")" />
+    <label for="@($"exercise{exercise.WorkoutTypeID}")">@exercise.ExerciseName</label>
+    <br />
+}
