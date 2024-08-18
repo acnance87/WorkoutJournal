@@ -15,9 +15,8 @@ namespace WorkoutJournal.Managers
             return _repository.AddWorkout(workout);
         }
 
-        public WorkoutSessions CreateWorkoutSession(IEnumerable<Workouts> workouts) {
+        public WorkoutSessions BeginNewWorkoutSession() {
             var toAdd = new WorkoutSessions();
-            toAdd.Workouts = workouts.ToList();
             toAdd.SessionDate = DateTime.Now;
 
             return _repository.CreateWorkoutSession(toAdd);

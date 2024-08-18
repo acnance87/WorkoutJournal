@@ -1,0 +1,38 @@
+﻿@using WorkoutJournal.ViewModels
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model WorkoutViewModel
+
+<h1>Let's steal some souls!</h1>
+<p>
+    Current workout: @Model.CurrentWorkout.SessionDate.ToShortDateString()
+</p>
+
+<ul id="workoutTypes">
+    <li>Add new...</li>
+</ul>
+
+<button class="btn-primary">Click to add a workout</button>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btn-primary').on('click', function () {
+                $.ajax({
+                  url: '/home/addworkout',
+                  type: 'get',
+                    success: function (data) {
+                        let workouts = $('#workoutTypes');
+                        if (workouts.children()[0].innerHTML === "Add new...") {
+                            workouts.children().remove();
+                        }
+                        let addWorkout = document.createElement('li');
+                        addWorkout.innerHTML = data.exerciseName;
+                        workouts.append(addWorkout);
+                    }
+                })
+            });
+        });
+    </script>
+}

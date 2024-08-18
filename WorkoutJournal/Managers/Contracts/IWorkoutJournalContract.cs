@@ -6,7 +6,7 @@ namespace WorkoutJournal.Managers.Contracts {
 
         Workouts AddWorkout(Workouts workout);
 
-        WorkoutSessions CreateWorkoutSession(IEnumerable<Workouts> workouts);
+        WorkoutSessions BeginNewWorkoutSession();
 
         IEnumerable<Workouts> GetWorkouts();
 
