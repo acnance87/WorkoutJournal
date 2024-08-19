@@ -6,7 +6,7 @@
 @model IEnumerable<WorkoutTypes>
 
 @foreach (var exercise in Model) {
-    <input type="checkbox" name="workoutsSelected" class="workoutSelect form-control checkbox-inline" id="@($"exercise{exercise.WorkoutTypeID}")" />
-    <label for="@($"exercise{exercise.WorkoutTypeID}")">@exercise.ExerciseName</label>
+    <input type="checkbox" name="workoutsSelected" class="workoutSelect form-control checkbox-inline" id="@($"{exercise.WorkoutTypeID}-{exercise.ExerciseName}")" />
+    <label for="@($"{exercise.WorkoutTypeID}-{exercise.ExerciseName}")">@exercise.ExerciseName</label>
     <br />
 }

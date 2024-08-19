@@ -15,11 +15,10 @@ namespace WorkoutJournal.Managers
             return _repository.AddWorkout(workout);
         }
 
-        public WorkoutSessions BeginNewWorkoutSession() {
-            var toAdd = new WorkoutSessions();
-            toAdd.SessionDate = DateTime.Now;
+        public WorkoutSessions BeginNewWorkoutSession(WorkoutSessions workoutSession) {
+            workoutSession.SessionDate = DateTime.Now;
 
-            return _repository.CreateWorkoutSession(toAdd);
+            return _repository.CreateWorkoutSession(workoutSession);
         }
 
         public IEnumerable<Workouts> GetWorkouts() {

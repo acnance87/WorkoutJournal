@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 using WorkoutJournal.Data.Models;
 using WorkoutJournal.Managers.Contracts;
 using WorkoutJournal.ViewModels;
@@ -19,22 +20,13 @@ namespace WorkoutJournal.Controllers {
         }
 
         public ActionResult BeginWorkout() {
-            //var newWorkout = _contract.BeginNewWorkoutSession();
-            var vm = new WorkoutViewModel() {
-                CurrentWorkout = new WorkoutSessions() {
-                    SessionDate = DateTime.Now,
-                    SessionID = 1,
-                    Workouts = [],
-                }
-            };
-
-            return View(vm);
+            return View();
         }
 
         public ActionResult AddWorkout(int exerciseId) {
             var toReturn = new Workouts() {
                 Weight = 0,
-                PerceivedExertion = 0,
+                PerceivedExertionKind = Data.Enum.PerceivedExertion.Low,
                 Repetitions = 0,
                 WorkoutType = new WorkoutTypes() {
                     WorkoutTypeID = exerciseId,
@@ -46,19 +38,44 @@ namespace WorkoutJournal.Controllers {
         }
 
         public ActionResult GetWorkouts() {
-            var newWorkouts = new List<AddWorkoutViewModel>() {
-                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Abdominal crunch", WorkoutTypeID = 1 }, IsChecked = false },
-                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Bicep curl", WorkoutTypeID = 2 }, IsChecked = false },
-                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Chest press", WorkoutTypeID = 3 }, IsChecked = false },
-                new AddWorkoutViewModel() { WorkoutType = new() { ExerciseName = "Seated squat", WorkoutTypeID = 4 }, IsChecked = false },
-            }; 
-            return PartialView("_AddWorkout", newWorkouts);
-            //return PartialView("_AddWorkout", _contract.GetWorkoutsTypes());
+            var workoutTypes = _contract.GetWorkoutsTypes();
+
+            return PartialView("_AddWorkout", workoutTypes);
         }
 
         [HttpPost]
-        public ActionResult CreateWorkout([FromBody] IEnumerable<AddWorkoutViewModel> workoutsSelected) {
-            return Ok();
+        public ActionResult CreateWorkout([FromBody] WorkoutSelection[] workoutsSelected) {
+            var workouts = new List<Workouts>();
+
+            var workoutSession = new WorkoutSessions() {
+                SessionDate = DateTime.Now,
+                Workouts = null,
+            };
+
+            foreach (var workout in workoutsSelected) {
+                workouts.Add(new Workouts() {
+                    WorkoutTypeID = workout.WorkoutID,
+                    PerceivedExertionKind = Data.Enum.PerceivedExertion.Low,
+                    Repetitions = 0,
+                    Weight = 0,
+                    Session = workoutSession,
+                });
+            }
+
+            workoutSession.Workouts = workouts;
+
+            var newWorkout = _contract.BeginNewWorkoutSession(workoutSession);
+
+            foreach (var nw in newWorkout.Workouts) {
+                nw.WorkoutType = new WorkoutTypes() {
+                    ExerciseName = workoutsSelected.First(e => e.WorkoutID == nw.WorkoutTypeID).ExerciseName,
+                    WorkoutTypeID = workoutsSelected.First(e => e.WorkoutID == nw.WorkoutTypeID).WorkoutID,
+                };
+            }
+
+
+            return PartialView("_EditWorkout", newWorkout);
         }
-    }   
+    }
 }
+

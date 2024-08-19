@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using WorkoutJournal.Data.Enum;
 
 namespace WorkoutJournal.Data.Models;
 
@@ -13,7 +14,7 @@ public partial class Workouts
 
     public int SessionID { get; set; }
 
-    public byte? PerceivedExertion { get; set; }
+    public PerceivedExertion? PerceivedExertionKind { get; set; }
 
     public int Repetitions { get; set; }
 
